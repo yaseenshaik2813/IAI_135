@@ -1,0 +1,47 @@
+class State:
+    def __init__(self, queens):
+        self.queens = queens
+
+    def __eq__(self, other):
+        return self.queens == other.queens
+
+    def __hash__(self):
+        return hash(self.queens)
+
+def heuristic(state):
+    attacks = 0
+    for i in range(len(state.queens)):
+        for j in range(i + 1, len(state.queens)):
+            if state.queens[i] == state.queens[j]:
+                attacks += 1
+            elif abs(i - j) == abs(state.queens[i] - state.queens[j]):
+                attacks += 1
+    return attacks
+
+def a_star_8_queens(initial_state):
+    open_list = [initial_state]
+    closed_list = set()
+
+    while open_list:
+        current_state = min(open_list, key=lambda state: heuristic(state))
+        open_list.remove(current_state)
+
+        if heuristic(current_state) == 0:
+            return current_state.queens
+
+        closed_list.add(current_state)
+
+        for i in range(8):
+            for j in range(8):
+                if j != current_state.queens[i]:
+                    new_queens = current_state.queens[:i] + (j,) + current_state.queens[i + 1:]
+                    new_state = State(new_queens)
+
+                    if new_state not in closed_list and new_state not in open_list:
+                        open_list.append(new_state)
+
+    return None
+
+initial_state = State(queens=(0, 1, 2, 3, 4, 5, 6, 7))
+solution = a_star_8_queens(initial_state)
+print("Solution:", solution)
