@@ -1,0 +1,34 @@
+from sympy import symbols, Not, And, Or
+
+P = symbols("P")
+W = symbols("W")
+G = symbols("G")
+
+rules = [
+    And(Not(P), Not(W), G),
+    Or(And(P, Not(W)), And(Not(P), W)),
+]
+
+initial_state = {
+    P: False,
+    W: False,
+    G: True,
+}
+
+# Define agent's actions
+actions = ["MoveUp", "MoveDown", "MoveLeft", "MoveRight", "Grab", "Shoot"]
+
+
+current_state = initial_state
+
+print("Initial state:", current_state)
+print("Possible actions:", actions)
+
+current_state = {
+    P: True,
+    W: False,
+    G: True,
+}
+
+
+print("Updated state:", current_state)
