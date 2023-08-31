@@ -1,0 +1,54 @@
+import heapq
+import itertools
+
+class Node:
+    def __init__(self, state, parent=None, cost=0, heuristic=0):
+        self.state = state
+        self.parent = parent
+        self.cost = cost
+        self.heuristic = heuristic
+        self.total_cost = self.cost + self.heuristic
+
+    def __lt__(self, other):
+        return self.total_cost < other.total_cost
+
+def euclidean_distance(p1, p2):
+    return ((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2) ** 0.5
+
+def a_star_tsp(cities):
+    start_city = cities[0]
+    remaining_cities = cities[1:]
+    initial_node = Node(state=(start_city,), cost=0, heuristic=0)
+
+    open_list = []
+    closed_list = set()
+
+    heapq.heappush(open_list, initial_node)
+
+    while open_list:
+        current_node = heapq.heappop(open_list)
+        current_state = current_node.state
+
+        if len(current_state) == len(cities):
+            return current_state
+
+        closed_list.add(current_state)
+
+        for city in remaining_cities:
+            if city not in current_state:
+                new_state = current_state + (city,)
+                new_cost = current_node.cost + euclidean_distance(current_state[-1], city)
+                new_heuristic = euclidean_distance(city, start_city)
+                new_node = Node(state=new_state, parent=current_node, cost=new_cost, heuristic=new_heuristic)
+
+                if new_state not in closed_list:
+                    heapq.heappush(open_list, new_node)
+
+    return None
+
+cities = [(0, 0), (1, 3), (2, 8), (5, 2), (6, 6)]
+optimal_path = a_star_tsp(cities)
+total_distance = sum(euclidean_distance(cities[i], cities[i+1]) for i in range(len(optimal_path)-1)) + euclidean_distance(cities[-1], cities[0])
+
+print("Optimal Path:", optimal_path)
+print("Total Distance:", total_distance)
