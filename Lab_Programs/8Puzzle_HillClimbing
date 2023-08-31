@@ -1,0 +1,69 @@
+import random
+
+class PuzzleState:
+    def __init__(self, puzzle):
+        self.puzzle = puzzle
+        self.heuristic = self.calculate_heuristic()
+
+    def calculate_heuristic(self):
+        misplaced = 0
+        for i in range(3):
+            for j in range(3):
+                if self.puzzle[i][j] != i * 3 + j:
+                    misplaced += 1
+        return misplaced
+
+def generate_random_puzzle():
+    flat_puzzle = list(range(9))
+    random.shuffle(flat_puzzle)
+    puzzle = [flat_puzzle[i:i + 3] for i in range(0, 9, 3)]
+    return puzzle
+
+
+
+def hill_climbing(initial_state):
+    current_state = initial_state
+
+    while True:
+        neighbors = generate_neighbors(current_state)
+        best_neighbor = min(neighbors, key=lambda state: state.heuristic)
+
+        if best_neighbor.heuristic >= current_state.heuristic:
+            return current_state
+
+        current_state = best_neighbor
+
+def generate_neighbors(state):
+    neighbors = []
+    blank_row, blank_col = find_blank(state)
+
+    for dr, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+        new_row, new_col = blank_row + dr, blank_col + dc
+        if 0 <= new_row < 3 and 0 <= new_col < 3:
+            new_puzzle = [list(row) for row in state.puzzle]
+            new_puzzle[blank_row][blank_col], new_puzzle[new_row][new_col] = new_puzzle[new_row][new_col], new_puzzle[blank_row][blank_col]
+            neighbors.append(PuzzleState(new_puzzle))
+
+    return neighbors
+
+def find_blank(state):
+    for i in range(3):
+        for j in range(3):
+            if state.puzzle[i][j] == 0:
+                return i, j
+    return None
+
+
+def print_puzzle(state):
+    for row in state.puzzle:
+        print(" ".join(str(x) if x != 9 else ' ' for x in row))
+
+initial_puzzle = generate_random_puzzle()
+initial_state = PuzzleState(initial_puzzle)
+print("Initial Puzzle:")
+print_puzzle(initial_state)
+
+final_state = hill_climbing(initial_state)
+print("\nFinal Puzzle:")
+print_puzzle(final_state)
+print("Total Misplaced Tiles:", final_state.heuristic)
