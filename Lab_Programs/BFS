@@ -1,0 +1,52 @@
+from collections import deque
+
+def is_valid_move(row, col, board_size):
+    return 0 <= row < board_size and 0 <= col < board_size
+
+def bfs(board_size, start, target):
+    visited = set()
+    queue = deque([(start, [])])
+
+    while queue:
+        current_position, path = queue.popleft()
+        row, col = current_position
+
+        if current_position == target:
+            return path + [current_position]
+
+        if current_position not in visited:
+            visited.add(current_position)
+
+            checker_moves = [(1, 1), (1, -1), (-1, 1), (-1, -1)]
+
+            for move in checker_moves:
+                new_row, new_col = row + move[0], col + move[1]
+                new_position = (new_row, new_col)
+
+                if is_valid_move(new_row, new_col, board_size) and new_position not in visited:
+                    queue.append((new_position, path + [current_position]))
+
+    return None  # No path found
+
+def main():
+    board_size = int(input("Enter the board size: "))
+
+    initial_row = int(input("Enter the initial row: "))
+    initial_col = int(input("Enter the initial column: "))
+    initial_position = (initial_row, initial_col)
+
+    target_row = int(input("Enter the target row: "))
+    target_col = int(input("Enter the target column: "))
+    target_position = (target_row, target_col)
+
+    path = bfs(board_size, initial_position, target_position)
+
+    if path:
+        print("Path found:")
+        for step, position in enumerate(path):
+            print(f"Step {step + 1}: {position}")
+    else:
+        print("No path found.")
+
+if __name__ == "__main__":
+    main()
