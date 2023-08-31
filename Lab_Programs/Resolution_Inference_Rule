@@ -1,0 +1,21 @@
+def resolve(clause1, clause2):
+    resolved = set()
+
+    # Apply resolution rule
+    for literal in clause1:
+        if ("~" + literal) in clause2:
+            resolvent = [l for l in (clause1 + clause2) if l != literal and l != ("~" + literal)]
+            resolved.add(tuple(resolvent))
+
+    return resolved
+
+# Define clauses as lists of literals
+clause1 = ["~P", "Q"]
+clause2 = ["P", "~Q"]
+
+# Apply resolution to the given clauses
+resolvent_set = resolve(clause1, clause2)
+
+print("Resolved clauses:")
+for resolvent in resolvent_set:
+    print(resolvent)
