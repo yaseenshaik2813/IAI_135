@@ -1,0 +1,45 @@
+class PerformanceEvaluationSystem:
+    def __init__(self):
+        self.criteria_weights = {
+            "communication": 0.2,
+            "quality_of_work": 0.3,
+            "punctuality": 0.2,
+            "teamwork": 0.2,
+            "initiative": 0.1
+        }
+
+    def evaluate(self, employee_data):
+        total_score = 0
+        for criterion, weight in self.criteria_weights.items():
+            if criterion in employee_data:
+                total_score += employee_data[criterion] * weight
+
+        return total_score
+
+def main():
+    evaluation_system = PerformanceEvaluationSystem()
+
+    employee1 = {
+        "communication": 4,
+        "quality_of_work": 5,
+        "punctuality": 4,
+        "teamwork": 4,
+        "initiative": 3
+    }
+
+    employee2 = {
+        "communication": 3,
+        "quality_of_work": 4,
+        "punctuality": 5,
+        "teamwork": 4,
+        "initiative": 2
+    }
+
+    score1 = evaluation_system.evaluate(employee1)
+    score2 = evaluation_system.evaluate(employee2)
+
+    print("Employee 1 Performance Score:", score1)
+    print("Employee 2 Performance Score:", score2)
+
+if __name__ == "__main__":
+    main()
