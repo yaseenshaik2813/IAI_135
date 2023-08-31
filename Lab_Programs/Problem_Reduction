@@ -1,0 +1,66 @@
+import heapq
+
+class Node:
+    def __init__(self, state, parent=None, cost=0, heuristic=0):
+        self.state = state
+        self.parent = parent
+        self.cost = cost
+        self.heuristic = heuristic
+        self.total_cost = self.cost + self.heuristic
+
+    def __lt__(self, other):
+        return self.total_cost < other.total_cost
+
+def ao_star(problem, max_subproblem_size):
+    initial_state = problem.initial_state()
+    initial_node = Node(state=initial_state, cost=0, heuristic=problem.heuristic(initial_state))
+
+    open_list = []
+    closed_list = set()
+
+    heapq.heappush(open_list, initial_node)
+
+    while open_list:
+        current_node = heapq.heappop(open_list)
+        current_state = current_node.state
+
+        if problem.goal_test(current_state):
+            return current_state
+
+        closed_list.add(current_state)
+
+        subproblem_states = problem.get_subproblem_states(current_state, max_subproblem_size)
+
+        for subproblem_state in subproblem_states:
+            if subproblem_state not in closed_list:
+                subproblem_cost = problem.subproblem_cost(subproblem_state, current_state)
+                subproblem_heuristic = problem.heuristic(subproblem_state)
+                subproblem_node = Node(state=subproblem_state, parent=current_node, cost=subproblem_cost, heuristic=subproblem_heuristic)
+
+                heapq.heappush(open_list, subproblem_node)
+
+    return None
+
+class Problem:
+    def __init__(self):
+        pass
+
+    def initial_state(self):
+        return (0, 0)
+
+    def goal_test(self, state):
+        return state == (5, 5)
+
+    def heuristic(self, state):
+        return abs(state[0] - 5) + abs(state[1] - 5)
+
+    def get_subproblem_states(self, state, max_subproblem_size):
+        return [(state[0] + dx, state[1] + dy) for dx in range(-max_subproblem_size, max_subproblem_size + 1) for dy in range(-max_subproblem_size, max_subproblem_size + 1)]
+
+    def subproblem_cost(self, subproblem_state, current_state):
+        return abs(subproblem_state[0] - current_state[0]) + abs(subproblem_state[1] - current_state[1])
+
+problem = Problem()
+max_subproblem_size = 2
+solution = ao_star(problem, max_subproblem_size)
+print("Solution:", solution)
