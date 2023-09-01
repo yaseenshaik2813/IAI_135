@@ -1,0 +1,13 @@
+p_A = 1 / 7
+p_B = 2 / 7
+p_C = 4 / 7
+p_D_given_A = 0.005
+
+p_D = p_D_given_A * p_A + 0.008 * p_B + 0.010 * p_C
+
+p_A_given_D = (p_D_given_A * p_A) / p_D
+
+from fractions import Fraction
+result_fraction = Fraction(p_A_given_D).limit_denominator()
+
+print(f"{result_fraction.numerator}/{result_fraction.denominator}")
