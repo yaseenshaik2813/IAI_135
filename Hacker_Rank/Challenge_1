@@ -1,1 +1,9 @@
 
+from fractions import Fraction
+
+favorable_outcomes = 4
+total_outcomes = 36
+
+probability = Fraction(favorable_outcomes, total_outcomes)
+
+print(probability)
